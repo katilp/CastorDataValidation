@@ -9,12 +9,12 @@ from array import array
 import os,re,sys,math
 
 # import CFF specific functions
-from CommonFSQFramework.Core.Util import *
-from CommonFSQFramework.Core.DrawUtil import *
-import CommonFSQFramework.Core.Style
+from CastorDataValidation.Plots.Util import *
+from CastorDataValidation.Plots.DrawUtil import *
+import CastorDataValidation.Plots.Style
 
 # set the CFF style
-style = CommonFSQFramework.Core.Style.setStyle()
+style = CastorDataValidation.Plots.Style.setStyle()
 style.SetPalette(1)
 style.SetPaintTextFormat("4.1f")
 
@@ -24,31 +24,25 @@ style.SetPaintTextFormat("4.1f")
 # manually draw your stuff from different files/histograms
 
 # read in all files
-file_comm10 = ROOT.TFile("CASTOR-Analysis-Commissioning10-7TeV-07122018/merged/CASTOR-Analysis-Commissioning10-7TeV-07122018_merged.root")
-file_pythia84C = ROOT.TFile("CASTOR-Analysis-Comm10-Pythia84C-7TeV-07122018/merged/CASTOR-Analysis-Comm10-Pythia84C-7TeV-07122018_merged.root")
-file_pythia84C_sensor = ROOT.TFile("CASTOR-Analysis-Comm10-Pythia84C-7TeV-FSSensor2010-07122018/merged/CASTOR-Analysis-Comm10-Pythia84C-7TeV-FSSensor2010-07122018_merged.root")
+file_comm10 = ROOT.TFile("../Commissioning10Analyzer/CASTOR_test_Commissioning10.root")
+file_pythia84C = ROOT.TFile("../Commissioning10Analyzer/CASTOR_test_Comm10MC.root")
 
 
 # get common histograms
-hevents_comm10 = ROOT.TH1D(file_comm10.Get("demo/hEventSelection"))
+hevents_comm10 = ROOT.TH1D(file_comm10.Get("analyzer/hEventSelection"))
 Nevents_comm10 = hevents_comm10.GetBinContent(4) # all events that passed full event selection
 print "events in Commissioning10 data used for normalisation:", Nevents_comm10
 
-hevents_pythia84C = ROOT.TH1D(file_pythia84C.Get("demo/hEventSelection"))
+hevents_pythia84C = ROOT.TH1D(file_pythia84C.Get("analyzer/hEventSelection"))
 Nevents_pythia84C = hevents_pythia84C.GetBinContent(4) # all events that passed full event selection
 Ntot_pythia84C = hevents_pythia84C.GetBinContent(1) # all events in the sample for lumi calculation
 print "events in Pythia8 4C used for normalisation:", Nevents_pythia84C
-
-hevents_pythia84C_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hEventSelection"))
-Nevents_pythia84C_sensor = hevents_pythia84C_sensor.GetBinContent(4) # all events that passed full event selection
-Ntot_pythia84C_sensor = hevents_pythia84C_sensor.GetBinContent(1) # all events in the sample for lumi calculation
-print "events in Pythia8 4C FSsensor2010 used for normalisation:", Nevents_pythia84C_sensor
 
 cRHmap1 = makeCMSCanvas()
 cRHmap1.SetName("RHmap1")
 
 # plot rechit map
-hRHmap1 = ROOT.TH2D(file_comm10.Get("demo/hRecHit_map"))
+hRHmap1 = ROOT.TH2D(file_comm10.Get("analyzer/hRecHit_map"))
 hRHmap1.Scale(1./Nevents_comm10)
 hRHmap1.GetYaxis().SetTitle("module")
 hRHmap1.GetXaxis().SetTitle("sector Comm10 data")
@@ -60,7 +54,7 @@ cRHmap2 = makeCMSCanvas()
 cRHmap2.SetName("RHmap2")
 
 # plot rechit map
-hRHmap2 = ROOT.TH2D(file_pythia84C.Get("demo/hRecHit_map"))
+hRHmap2 = ROOT.TH2D(file_pythia84C.Get("analyzer/hRecHit_map"))
 hRHmap2.Scale(1./Nevents_pythia84C)
 hRHmap2.GetYaxis().SetTitle("module")
 hRHmap2.GetXaxis().SetTitle("sector Pythia8 4C")
@@ -72,7 +66,7 @@ cRHmap2.Print("cRHmap2_Pythia84C_Commissioning10.pdf")
 # plot rechit occupancy
 cRHoccupancy1 = makeCMSCanvas()
 cRHoccupancy1.SetName("RHoccupancy1")
-hRHoccupancy1 = ROOT.TH2D(file_comm10.Get("demo/hRecHit_occupancy"))
+hRHoccupancy1 = ROOT.TH2D(file_comm10.Get("analyzer/hRecHit_occupancy"))
 hRHoccupancy1.Scale(1./Nevents_comm10)
 hRHoccupancy1.GetYaxis().SetTitle("occupancy, module")
 hRHoccupancy1.GetXaxis().SetTitle("sector Comm10 data")
@@ -86,7 +80,7 @@ ceflow.SetName("eflow")
 #ceflow.cd().SetLogy()
 
 # plot total energies
-heflow1 = ROOT.TH1D(file_comm10.Get("demo/hCASTOR_totalE_80rechits"))
+heflow1 = ROOT.TH1D(file_comm10.Get("analyzer/hCASTOR_totalE_80rechits"))
 heflow1.SetLineColor(1)
 heflow1.SetLineWidth(2)
 heflow1.Scale(1./heflow1.Integral())
@@ -98,26 +92,17 @@ heflow1.SetMarkerStyle(20)
 heflow1.Draw()
 print "eflow 80 rechits Comm10 data = ", heflow1.GetMean()
 
-heflow1_pythia84C = ROOT.TH1D(file_pythia84C.Get("demo/hCASTOR_totalE_80rechits"))
+heflow1_pythia84C = ROOT.TH1D(file_pythia84C.Get("analyzer/hCASTOR_totalE_80rechits"))
 heflow1_pythia84C.SetLineColor(2)
 heflow1_pythia84C.SetLineWidth(2)
 heflow1_pythia84C.Scale(1./heflow1_pythia84C.Integral())
 heflow1_pythia84C.Draw("same")
 print "eflow 80 rechits Pythia8 4C = ", heflow1_pythia84C.GetMean()
 
-heflow1_pythia84C_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hCASTOR_totalE_80rechits"))
-heflow1_pythia84C_sensor.SetLineColor(4)
-heflow1_pythia84C_sensor.SetLineWidth(2)
-heflow1_pythia84C_sensor.Scale(1./heflow1_pythia84C_sensor.Integral())
-#heflow1_pythia84C_sensor.Draw("same")
-print "eflow 80 rechits Pythia8 4C FSsensor2010 = ", heflow1_pythia84C_sensor.GetMean()
-
-
 # add legend for 2 entries
 leflow = makeLegend(3)
 leflow.AddEntry(heflow1,"Comm10")
 leflow.AddEntry(heflow1_pythia84C,"Pythia8 4C")
-#leflow.AddEntry(heflow1_pythia84C_sensor,"Pythia8 4C FSsensor2010")
 leflow.Draw()
 
 ceflow.Print("ceflow_"+"Commissioning10.pdf")
@@ -126,7 +111,7 @@ cmodules = makeCMSCanvas()
 cmodules.SetName("modules")
 
 # plot mean energy vs module
-hmodules1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_module"))
+hmodules1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_module"))
 hmodules1.SetLineColor(1)
 hmodules1.SetLineWidth(2)
 hmodules1.Scale(1./Nevents_comm10)
@@ -141,23 +126,16 @@ for ibin in range(1,hmodules1.GetNbinsX()+1):
 
 hmodules1.Draw("E2")
 
-hmodules2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_module"))
+hmodules2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_module"))
 hmodules2.SetLineColor(2)
 hmodules2.SetLineWidth(2)
 hmodules2.Scale(1./Nevents_pythia84C)
 hmodules2.Draw("same")
 
-hmodules2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_module"))
-hmodules2_sensor.SetLineColor(4)
-hmodules2_sensor.SetLineWidth(2)
-hmodules2_sensor.Scale(1./Nevents_pythia84C_sensor)
-#hmodules2_sensor.Draw("same")
-
 # add legend for 2 entries
 lmodules = makeLegend(3)
 lmodules.AddEntry(hmodules1,"Comm10")
 lmodules.AddEntry(hmodules2,"Pythia8 4C")
-#lmodules.AddEntry(hmodules2_sensor,"Pythia8 4C FSsensor2010")
 lmodules.Draw()
 
 cmodules.Print("cmodules_"+"Commissioning10.pdf")
@@ -166,7 +144,7 @@ cmodules_norm = makeCMSCanvas()
 cmodules_norm.SetName("modules_norm")
 
 # plot mean energy vs module
-hmodules_norm1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_module"))
+hmodules_norm1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_module"))
 hmodules_norm1.SetLineColor(1)
 hmodules_norm1.SetLineWidth(2)
 hmodules_norm1.GetXaxis().SetRangeUser(0,5)
@@ -181,25 +159,17 @@ for ibin in range(1,hmodules_norm1.GetNbinsX()+1):
 
 hmodules_norm1.Draw("E2")
 
-hmodules_norm2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_module"))
+hmodules_norm2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_module"))
 hmodules_norm2.SetLineColor(2)
 hmodules_norm2.SetLineWidth(2)
 hmodules_norm2.GetXaxis().SetRangeUser(0,5)
 hmodules_norm2.Scale(100./hmodules_norm2.Integral())
 hmodules_norm2.Draw("same")
 
-hmodules_norm2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_module"))
-hmodules_norm2_sensor.SetLineColor(4)
-hmodules_norm2_sensor.SetLineWidth(2)
-hmodules_norm2_sensor.GetXaxis().SetRangeUser(0,5)
-hmodules_norm2_sensor.Scale(100./hmodules_norm2_sensor.Integral())
-#hmodules_norm2_sensor.Draw("same")
-
 # add legend for 2 entries
 lmodules_norm = makeLegend(3)
 lmodules_norm.AddEntry(hmodules_norm1,"Comm10")
 lmodules_norm.AddEntry(hmodules_norm2,"Pythia8 4C")
-#lmodules_norm.AddEntry(hmodules_norm2_sensor,"Pythia8 4C FSsensor2010")
 lmodules_norm.Draw()
 
 cmodules_norm.Print("cmodules_norm_"+"Commissioning10.pdf")
@@ -208,7 +178,7 @@ csectors = makeCMSCanvas()
 csectors.SetName("sectors")
 
 # plot mean energy vs sector
-hsectors1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_sector"))
+hsectors1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_sector"))
 hsectors1.SetLineColor(1)
 hsectors1.SetLineWidth(2)
 hsectors1.Scale(1./Nevents_comm10)
@@ -222,23 +192,16 @@ for ibin in range(1,hsectors1.GetNbinsX()+1):
 
 hsectors1.Draw("E2")
 
-hsectors2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_sector"))
+hsectors2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_sector"))
 hsectors2.SetLineColor(2)
 hsectors2.SetLineWidth(2)
 hsectors2.Scale(1./Nevents_pythia84C)
 hsectors2.Draw("same")
 
-hsectors2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_sector"))
-hsectors2_sensor.SetLineColor(4)
-hsectors2_sensor.SetLineWidth(2)
-hsectors2_sensor.Scale(1./Nevents_pythia84C_sensor)
-#hsectors2_sensor.Draw("same")
-
 # add legend for 2 entries
 lsectors = makeLegend(3)
 lsectors.AddEntry(hsectors1,"Comm10")
 lsectors.AddEntry(hsectors2,"Pythia8 4C")
-#lsectors.AddEntry(hsectors2_sensor,"Pythia8 4C FSsensor2010")
 lsectors.Draw()
 
 csectors.Print("csectors_"+"Commissioning10.pdf")
@@ -247,7 +210,7 @@ csectors_norm = makeCMSCanvas()
 csectors_norm.SetName("sectors_norm")
 
 # plot mean energy vs sector
-hsectors_norm1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_sector"))
+hsectors_norm1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_sector"))
 hsectors_norm1.SetLineColor(1)
 hsectors_norm1.SetLineWidth(2)
 hsectors_norm1.Scale(100./hsectors_norm1.Integral())
@@ -261,23 +224,16 @@ for ibin in range(1,hsectors_norm1.GetNbinsX()+1):
 
 hsectors_norm1.Draw("E2")
 
-hsectors_norm2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_sector"))
+hsectors_norm2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_sector"))
 hsectors_norm2.SetLineColor(2)
 hsectors_norm2.SetLineWidth(2)
 hsectors_norm2.Scale(100./hsectors_norm2.Integral())
 hsectors_norm2.Draw("same")
 
-hsectors_norm2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_sector"))
-hsectors_norm2_sensor.SetLineColor(4)
-hsectors_norm2_sensor.SetLineWidth(2)
-hsectors_norm2_sensor.Scale(100./hsectors_norm2_sensor.Integral())
-#hsectors_norm2_sensor.Draw("same")
-
 # add legend for 2 entries
 lsectors_norm = makeLegend(3)
 lsectors_norm.AddEntry(hsectors_norm1,"Comm10")
 lsectors_norm.AddEntry(hsectors_norm2,"Pythia8 4C")
-#lsectors_norm.AddEntry(hsectors_norm2_sensor,"Pythia8 4C FSsensor2010")
 lsectors_norm.Draw()
 
 csectors_norm.Print("csectors_norm_"+"Commissioning10.pdf")
@@ -286,7 +242,7 @@ c5Msectors = makeCMSCanvas()
 c5Msectors.SetName("5Msectors")
 
 # plot mean energy vs sector
-h5Msectors1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_5Msector"))
+h5Msectors1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_5Msector"))
 h5Msectors1.SetLineColor(1)
 h5Msectors1.SetLineWidth(2)
 h5Msectors1.Scale(1./Nevents_comm10)
@@ -300,23 +256,16 @@ for ibin in range(1,h5Msectors1.GetNbinsX()+1):
 
 h5Msectors1.Draw("E2")
 
-h5Msectors2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_5Msector"))
+h5Msectors2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_5Msector"))
 h5Msectors2.SetLineColor(2)
 h5Msectors2.SetLineWidth(2)
 h5Msectors2.Scale(1./Nevents_pythia84C)
 h5Msectors2.Draw("same")
 
-h5Msectors2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_5Msector"))
-h5Msectors2_sensor.SetLineColor(4)
-h5Msectors2_sensor.SetLineWidth(2)
-h5Msectors2_sensor.Scale(1./Nevents_pythia84C_sensor)
-#h5Msectors2_sensor.Draw("same")
-
 # add legend for 2 entries
 l5Msectors = makeLegend(3)
 l5Msectors.AddEntry(h5Msectors1,"Comm10")
 l5Msectors.AddEntry(h5Msectors2,"Pythia8 4C")
-#l5Msectors.AddEntry(h5Msectors2_sensor,"Pythia8 4C FSsensor2010")
 l5Msectors.Draw()
 
 c5Msectors.Print("c5Msectors_"+"Commissioning10.pdf")
@@ -325,7 +274,7 @@ c5Msectors_norm = makeCMSCanvas()
 c5Msectors_norm.SetName("5Msectors_norm")
 
 # plot mean energy vs sector
-h5Msectors_norm1 = ROOT.TH1D(file_comm10.Get("demo/hRecHit_5Msector"))
+h5Msectors_norm1 = ROOT.TH1D(file_comm10.Get("analyzer/hRecHit_5Msector"))
 h5Msectors_norm1.SetLineColor(1)
 h5Msectors_norm1.SetLineWidth(2)
 h5Msectors_norm1.Scale(100./h5Msectors_norm1.Integral())
@@ -339,23 +288,16 @@ for ibin in range(1,h5Msectors_norm1.GetNbinsX()+1):
 
 h5Msectors_norm1.Draw("E2")
 
-h5Msectors_norm2 = ROOT.TH1D(file_pythia84C.Get("demo/hRecHit_5Msector"))
+h5Msectors_norm2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hRecHit_5Msector"))
 h5Msectors_norm2.SetLineColor(2)
 h5Msectors_norm2.SetLineWidth(2)
 h5Msectors_norm2.Scale(100./h5Msectors_norm2.Integral())
 h5Msectors_norm2.Draw("same")
 
-h5Msectors_norm2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hRecHit_5Msector"))
-h5Msectors_norm2_sensor.SetLineColor(4)
-h5Msectors_norm2_sensor.SetLineWidth(2)
-h5Msectors_norm2_sensor.Scale(100./h5Msectors_norm2_sensor.Integral())
-#h5Msectors_norm2_sensor.Draw("same")
-
 # add legend for 2 entries
 l5Msectors_norm = makeLegend(3)
 l5Msectors_norm.AddEntry(h5Msectors_norm1,"Comm10")
 l5Msectors_norm.AddEntry(h5Msectors_norm2,"Pythia8 4C")
-#l5Msectors_norm.AddEntry(h5Msectors_norm2_sensor,"Pythia8 4C FSsensor2010")
 l5Msectors_norm.Draw()
 
 c5Msectors_norm.Print("c5Msectors_norm_"+"Commissioning10.pdf")
@@ -367,7 +309,7 @@ cLTower_energy.SetName("LTower_energy")
 cLTower_energy.cd().SetLogy()
 
 # plot energy
-hLTower_energy1 = ROOT.TH1D(file_comm10.Get("demo/hLTower_energy"))
+hLTower_energy1 = ROOT.TH1D(file_comm10.Get("analyzer/hLTower_energy"))
 hLTower_energy1.SetLineColor(1)
 hLTower_energy1.SetLineWidth(2)
 hLTower_energy1.Scale(1./hLTower_energy1.Integral())
@@ -377,23 +319,16 @@ hLTower_energy1.GetYaxis().SetRangeUser(0.0001,0.1)
 hLTower_energy1.SetMarkerStyle(20)
 hLTower_energy1.Draw()
 
-hLTower_energy2 = ROOT.TH1D(file_pythia84C.Get("demo/hLTower_energy"))
+hLTower_energy2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hLTower_energy"))
 hLTower_energy2.SetLineColor(2)
 hLTower_energy2.SetLineWidth(2)
 hLTower_energy2.Scale(1./hLTower_energy2.Integral())
 hLTower_energy2.Draw("same")
 
-hLTower_energy2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hLTower_energy"))
-hLTower_energy2_sensor.SetLineColor(4)
-hLTower_energy2_sensor.SetLineWidth(2)
-hLTower_energy2_sensor.Scale(1./hLTower_energy2_sensor.Integral())
-hLTower_energy2_sensor.Draw("same")
-
 # add legend for 2 entries
 lLTower_energy = makeLegend(3)
 lLTower_energy.AddEntry(hLTower_energy1,"Comm10")
 lLTower_energy.AddEntry(hLTower_energy2,"Pythia8 4C")
-lLTower_energy.AddEntry(hLTower_energy2_sensor,"Pythia8 4C FSsensor2010")
 lLTower_energy.Draw()
 
 cLTower_energy.Print("cLTower_energy_"+"Commissioning10.pdf")
@@ -403,7 +338,7 @@ cTower_multi.SetName("Tower_multi")
 cTower_multi.cd().SetLogy()
 
 # plot multiplicity
-hTower_multi1 = ROOT.TH1D(file_comm10.Get("demo/hTower_multi"))
+hTower_multi1 = ROOT.TH1D(file_comm10.Get("analyzer/hTower_multi"))
 hTower_multi1.SetLineColor(1)
 hTower_multi1.SetLineWidth(2)
 hTower_multi1.Scale(1./hTower_multi1.Integral())
@@ -413,23 +348,16 @@ hTower_multi1.GetYaxis().SetRangeUser(0.01,5)
 hTower_multi1.SetMarkerStyle(20)
 hTower_multi1.Draw()
 
-hTower_multi2 = ROOT.TH1D(file_pythia84C.Get("demo/hTower_multi"))
+hTower_multi2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hTower_multi"))
 hTower_multi2.SetLineColor(2)
 hTower_multi2.SetLineWidth(2)
 hTower_multi2.Scale(1./hTower_multi2.Integral())
 hTower_multi2.Draw("same")
 
-hTower_multi2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hTower_multi"))
-hTower_multi2_sensor.SetLineColor(4)
-hTower_multi2_sensor.SetLineWidth(2)
-hTower_multi2_sensor.Scale(1./hTower_multi2_sensor.Integral())
-hTower_multi2_sensor.Draw("same")
-
 # add legend for 2 entries
 lTower_multi = makeLegend(3)
 lTower_multi.AddEntry(hTower_multi1,"Comm10")
 lTower_multi.AddEntry(hTower_multi2,"Pythia8 4C")
-lTower_multi.AddEntry(hTower_multi2_sensor,"Pythia8 4C FSsensor2010")
 lTower_multi.Draw()
 
 cTower_multi.Print("cTower_multi_"+"Commissioning10.pdf")
@@ -458,44 +386,33 @@ cjet_energy_upad.cd()
 cjet_energy_upad.SetLogy()
 
 # plot energy
-hjet_energy1 = ROOT.TH1D(file_comm10.Get("demo/hJet_energy"))
+hjet_energy1 = ROOT.TH1D(file_comm10.Get("analyzer/hJet_energy"))
 hjet_energy1.SetLineColor(1)
 hjet_energy1.SetLineWidth(2)
 for ibin in range(1,hjet_energy1.GetNbinsX()+1):
     hjet_energy1.SetBinContent(ibin,hjet_energy1.GetBinContent(ibin)/hjet_energy1.GetXaxis().GetBinWidth(ibin))
     hjet_energy1.SetBinError(ibin,hjet_energy1.GetBinError(ibin)/hjet_energy1.GetXaxis().GetBinWidth(ibin))
 
-hjet_energy1.Scale(Nevents_pythia84C_sensor/Nevents_comm10) # scale data to number of events in MC
+hjet_energy1.Scale(Nevents_pythia84C/Nevents_comm10) # scale data to number of events in MC
 hjet_energy1.GetYaxis().SetTitle("Fraction")
 hjet_energy1.GetXaxis().SetTitle("jet energy")
 hjet_energy1.GetXaxis().SetRangeUser(0,3000)
 hjet_energy1.SetMarkerStyle(20)
 hjet_energy1.Draw()
 
-hjet_energy2 = ROOT.TH1D(file_pythia84C.Get("demo/hJet_energy"))
+hjet_energy2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hJet_energy"))
 hjet_energy2.SetLineColor(2)
 hjet_energy2.SetLineWidth(2)
 for ibin in range(1,hjet_energy2.GetNbinsX()+1):
     hjet_energy2.SetBinContent(ibin,hjet_energy2.GetBinContent(ibin)/hjet_energy2.GetXaxis().GetBinWidth(ibin))
     hjet_energy2.SetBinError(ibin,hjet_energy2.GetBinError(ibin)/hjet_energy2.GetXaxis().GetBinWidth(ibin))
 
-hjet_energy2.Scale(Nevents_pythia84C_sensor/Nevents_pythia84C) # scale data to number of events in MC
 hjet_energy2.Draw("same")
-
-hjet_energy2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hJet_energy"))
-hjet_energy2_sensor.SetLineColor(4)
-hjet_energy2_sensor.SetLineWidth(2)
-for ibin in range(1,hjet_energy2_sensor.GetNbinsX()+1):
-    hjet_energy2_sensor.SetBinContent(ibin,hjet_energy2_sensor.GetBinContent(ibin)/hjet_energy2_sensor.GetXaxis().GetBinWidth(ibin))
-    hjet_energy2_sensor.SetBinError(ibin,hjet_energy2_sensor.GetBinError(ibin)/hjet_energy2_sensor.GetXaxis().GetBinWidth(ibin))
-
-hjet_energy2_sensor.Draw("same")
 
 # add legend for 2 entries
 ljet_energy = makeLegend(3)
 ljet_energy.AddEntry(hjet_energy1,"Comm10")
 ljet_energy.AddEntry(hjet_energy2,"Pythia8 4C")
-ljet_energy.AddEntry(hjet_energy2_sensor,"Pythia8 4C FSsensor2010")
 ljet_energy.Draw()
 
 cjet_energy_lpad.cd()
@@ -516,10 +433,6 @@ hjet_energy2_ratio.GetXaxis().SetTickLength(0.03*1.8)
 hjet_energy2_ratio.GetXaxis().SetLabelSize(0.05*1.8)
 hjet_energy2_ratio.GetXaxis().SetLabelOffset(0.007*1.8)
 hjet_energy2_ratio.Draw()
-
-hjet_energy2_ratio_sensor = hjet_energy2_sensor.Clone()
-hjet_energy2_ratio_sensor.Divide(hjet_energy1)
-hjet_energy2_ratio_sensor.Draw("same")
 
 cjet_energy.Print("cjet_energy_"+"Commissioning10.pdf")
 
@@ -545,44 +458,33 @@ cjet_calenergy_upad.cd()
 cjet_calenergy_upad.SetLogy()
 
 # plot calenergy
-hjet_calenergy1 = ROOT.TH1D(file_comm10.Get("demo/hJet_calenergy"))
+hjet_calenergy1 = ROOT.TH1D(file_comm10.Get("analyzer/hJet_calenergy"))
 hjet_calenergy1.SetLineColor(1)
 hjet_calenergy1.SetLineWidth(2)
 for ibin in range(1,hjet_calenergy1.GetNbinsX()+1):
     hjet_calenergy1.SetBinContent(ibin,hjet_calenergy1.GetBinContent(ibin)/hjet_calenergy1.GetXaxis().GetBinWidth(ibin))
     hjet_calenergy1.SetBinError(ibin,hjet_calenergy1.GetBinError(ibin)/hjet_calenergy1.GetXaxis().GetBinWidth(ibin))
     
-hjet_calenergy1.Scale(Nevents_pythia84C_sensor/Nevents_comm10) # scale data to number of events in MC
+hjet_calenergy1.Scale(Nevents_pythia84C/Nevents_comm10) # scale data to number of events in MC
 hjet_calenergy1.GetYaxis().SetTitle("Fraction")
 hjet_calenergy1.GetXaxis().SetTitle("Calibrated jet energy")
 hjet_calenergy1.GetXaxis().SetRangeUser(0,3000)
 hjet_calenergy1.SetMarkerStyle(20)
 hjet_calenergy1.Draw()
 
-hjet_calenergy2 = ROOT.TH1D(file_pythia84C.Get("demo/hJet_calenergy"))
+hjet_calenergy2 = ROOT.TH1D(file_pythia84C.Get("analyzer/hJet_calenergy"))
 hjet_calenergy2.SetLineColor(2)
 hjet_calenergy2.SetLineWidth(2)
 for ibin in range(1,hjet_calenergy2.GetNbinsX()+1):
     hjet_calenergy2.SetBinContent(ibin,hjet_calenergy2.GetBinContent(ibin)/hjet_calenergy2.GetXaxis().GetBinWidth(ibin))
     hjet_calenergy2.SetBinError(ibin,hjet_calenergy2.GetBinError(ibin)/hjet_calenergy2.GetXaxis().GetBinWidth(ibin))
 
-hjet_calenergy2.Scale(Nevents_pythia84C_sensor/Nevents_pythia84C) # scale data to number of events in MC
 hjet_calenergy2.Draw("same")
-
-hjet_calenergy2_sensor = ROOT.TH1D(file_pythia84C_sensor.Get("demo/hJet_calenergy"))
-hjet_calenergy2_sensor.SetLineColor(4)
-hjet_calenergy2_sensor.SetLineWidth(2)
-for ibin in range(1,hjet_calenergy2_sensor.GetNbinsX()+1):
-    hjet_calenergy2_sensor.SetBinContent(ibin,hjet_calenergy2_sensor.GetBinContent(ibin)/hjet_calenergy2_sensor.GetXaxis().GetBinWidth(ibin))
-    hjet_calenergy2_sensor.SetBinError(ibin,hjet_calenergy2_sensor.GetBinError(ibin)/hjet_calenergy2_sensor.GetXaxis().GetBinWidth(ibin))
-
-hjet_calenergy2_sensor.Draw("same")
 
 # add legend for 2 entries
 ljet_calenergy = makeLegend(2)
 ljet_calenergy.AddEntry(hjet_calenergy1,"Comm10")
 ljet_calenergy.AddEntry(hjet_calenergy2,"Pythia8 4C")
-ljet_calenergy.AddEntry(hjet_calenergy2_sensor,"Pythia8 4C FSsensor2010")
 ljet_calenergy.Draw()
 
 cjet_calenergy_lpad.cd()
@@ -603,10 +505,6 @@ hjet_calenergy2_ratio.GetXaxis().SetTickLength(0.03*1.8)
 hjet_calenergy2_ratio.GetXaxis().SetLabelSize(0.05*1.8)
 hjet_calenergy2_ratio.GetXaxis().SetLabelOffset(0.007*1.8)
 hjet_calenergy2_ratio.Draw()
-
-hjet_calenergy2_ratio_sensor = hjet_calenergy2_sensor.Clone()
-hjet_calenergy2_ratio_sensor.Divide(hjet_calenergy1)
-hjet_calenergy2_ratio_sensor.Draw("same")
 
 cjet_calenergy.Print("cjet_calenergy_"+"Commissioning10.pdf")
 

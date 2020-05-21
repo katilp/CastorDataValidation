@@ -1,7 +1,7 @@
 import os, sys, imp
 import ROOT
 from array import array
-import CommonFSQFramework.Core.CMS_lumi
+import CastorDataValidation.Plots.CMS_lumi
 
 def getHisto(file,histoname,sample):
     # open the input ROOT file
