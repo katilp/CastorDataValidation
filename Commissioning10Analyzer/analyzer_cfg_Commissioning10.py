@@ -1,8 +1,6 @@
 import FWCore.ParameterSet.Config as cms
-from RecoMuon.TrackingTools.MuonServiceProxy_cff import *
 import PhysicsTools.PythonAnalysis.LumiList as LumiList
 import FWCore.ParameterSet.Types as CfgTypes
-#import FWCore.PythonUtilities.LumiList as LumiList
 process = cms.Process("Demo")
 
 
@@ -21,7 +19,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 # set the number of events to be skipped (if any) at end of file below
 
 # define JSON file
-goodJSON = '/home/cms-opendata/CMSSW_4_2_8_lowpupatch1/src/Demo/DemoAnalyzer/datasets/Commissioning10-May19ReReco_7TeV.json'
+goodJSON = 'datasets/Commissioning10-May19ReReco_7TeV.json'
 
 myLumis = LumiList.LumiList(filename = goodJSON).getCMSSWString().split(',')
 
@@ -37,12 +35,10 @@ import FWCore.Utilities.FileUtils as FileUtils
 # and add up the histograms using root tools.                    *
 # ****************************************************************
 #
-Comm2010data = FileUtils.loadListFromFile('/home/cms-opendata/CMSSW_4_2_8_lowpupatch1/src/Demo/DemoAnalyzer/datasets/CMS_Commissioning10_7TeV_Run135523_file_index.txt')
+Comm2010data = FileUtils.loadListFromFile('datasets/CMS_Commissioning10_MinimumBias_RECO_May19ReReco-v1_0001_file_index.txt')
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     *Comm2010data
-    #"root://eospublic.cern.ch//eos/opendata/cms/Run2010B/MinimumBias/AOD/Apr21ReReco-v1/0000/008A07E5-1771-E011-AC8F-001A92971B62.root"
-    #"root://xrootd.ba.infn.it//store/data/Commissioning10/MinimumBias/RECO/May19ReReco-v1/0001/FC24D593-1F83-E011-AA02-003048670BF8.root"
     )
 )
 
@@ -81,11 +77,9 @@ process.es_prefer_l1GtTriggerMaskTechTrig = cms.ESPrefer("L1GtTriggerMaskTechTri
 # communicate with the DB
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-#### does not work outside CERN, but use with CRAB
-process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
 #### use for local running 
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db')
-#process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db')
+process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
 
 # load latest ChannelQuality conditions to remove the bad channels
 process.es_ascii = cms.ESSource("CastorTextCalibrations",
@@ -104,7 +98,7 @@ process.load('RecoLocalCalo.Castor.ReReco_data_cff')
 # filter bad data
 process.castorInvalidDataFilter = cms.EDFilter("CastorInvalidDataFilter")
 
-process.demo = cms.EDAnalyzer('DemoAnalyzer'
+process.analyzer = cms.EDAnalyzer('Commissioning10Analyzer'
 )
 # ***********************************************************
 # output file name                                          *
@@ -114,4 +108,4 @@ process.demo = cms.EDAnalyzer('DemoAnalyzer'
 process.TFileService = cms.Service("TFileService",
        fileName = cms.string('CASTOR_test_Commissioning10.root')
                                    )                                   
-process.recopath = cms.Path(process.hltLevel1GTSeed*process.physDecl*process.noscraping*process.castorInvalidDataFilter*process.CastorReReco*process.demo)
+process.recopath = cms.Path(process.hltLevel1GTSeed*process.physDecl*process.noscraping*process.castorInvalidDataFilter*process.CastorReReco*process.analyzer)

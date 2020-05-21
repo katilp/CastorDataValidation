@@ -12,11 +12,24 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #    according to need and wish                                        *
 #    default is preset to 10000 events                                 *
 # **********************************************************************
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(25000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
+# ****************************************************************************
+# define the input data set here by inserting the appropriate .txt file list *
+# ****************************************************************************
+import FWCore.Utilities.FileUtils as FileUtils
+#
+# ****************************************************************
+# load the data set                                              * 
+# To run over all data subsets, replace '0000' by '0001' etc.    *
+# consecutively (make sure you save the output before rerunning) *
+# and add up the histograms using root tools.                    *
+# ****************************************************************
+#
+Comm2010MC = FileUtils.loadListFromFile('datasets/CMS_MonteCarloCASTOR_MinBias_Tune4C_7TeV_pythia8_cff_py_Step3_START42_V11_Dec11_v1_86bcdbe9c73956c342e477ba771c41c7_file_index.txt')
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-    "root://xrootd.ba.infn.it//store/user/hvanhaev/MinBias_Tune4C_7TeV_pythia8_cff_py_GEN_SIM_START311_V2_Dec11_v1/MinBias_Tune4C_7TeV_pythia8_cff_py_Step3_START42_V11_Dec11_v1/86bcdbe9c73956c342e477ba771c41c7/STEP2_RAW2DIGI_L1Reco_RECO_7TeV_9_1_DE0.root"
+    *Comm2010MC
     )
 )
 
@@ -32,11 +45,9 @@ process.source.skipEvents = cms.untracked.uint32(0)
 # communicate with the DB
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-#### does not work outside CERN, but use with CRAB
-process.GlobalTag.globaltag = 'START42_V11::All'
 #### use for local running 
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db')
-#process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
+process.GlobalTag.globaltag = 'START42_V17B::All'
 
 # load latest ChannelQuality conditions to remove the bad channels
 process.es_ascii = cms.ESSource("CastorTextCalibrations",
@@ -52,7 +63,7 @@ process.es_prefer_castor = cms.ESPrefer('CastorTextCalibrations','es_ascii')
 # import correct treatment of CASTOR objects
 process.load('RecoLocalCalo.Castor.ReReco_MC_cff')
 
-process.demo = cms.EDAnalyzer('DemoAnalyzer'
+process.analyzer = cms.EDAnalyzer('Commissioning10Analyzer'
 )
 # ***********************************************************
 # output file name                                          *
@@ -62,4 +73,4 @@ process.demo = cms.EDAnalyzer('DemoAnalyzer'
 process.TFileService = cms.Service("TFileService",
        fileName = cms.string('CASTOR_test_Comm10MC.root')
                                    )                                   
-process.recopath = cms.Path(process.CastorReReco*process.demo)
+process.recopath = cms.Path(process.CastorReReco*process.analyzer)

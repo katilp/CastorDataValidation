@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    DemoAnalyzer
-// Class:      DemoAnalyzer
+// Package:    Run2010ABAnalyzer
+// Class:      Run2010ABAnalyzer
 // 
-/**\class DemoAnalyzer DemoAnalyzer.cc Demo/DemoAnalyzer/src/DemoAnalyzer.cc
+/**\class Run2010ABAnalyzer Run2010ABAnalyzer.cc Demo/Run2010ABAnalyzer/src/Run2010ABAnalyzer.cc
 
  Description: [one line class summary]
 
@@ -83,10 +83,10 @@
 // class declaration
 //
 
-class DemoAnalyzer: public edm::EDAnalyzer {
+class Run2010ABAnalyzer: public edm::EDAnalyzer {
 public:
-	explicit DemoAnalyzer(const edm::ParameterSet&);
-	~DemoAnalyzer();
+	explicit Run2010ABAnalyzer(const edm::ParameterSet&);
+	~Run2010ABAnalyzer();
 
 private:
 	virtual void beginJob();
@@ -129,7 +129,7 @@ private:
 // constructors and destructor
 //
 
-DemoAnalyzer::DemoAnalyzer(const edm::ParameterSet& iConfig) {
+Run2010ABAnalyzer::Run2010ABAnalyzer(const edm::ParameterSet& iConfig) {
 
 //now do what ever initialization is needed
 edm::Service<TFileService> fs;
@@ -287,7 +287,7 @@ myPI = 3.141592653589793;
 }
 
 
-DemoAnalyzer::~DemoAnalyzer() {
+Run2010ABAnalyzer::~Run2010ABAnalyzer() {
 	// do anything here that needs to be done at destruction time
 	// (e.g. close files, deallocate resources etc.)
 }
@@ -299,7 +299,7 @@ DemoAnalyzer::~DemoAnalyzer() {
 //
 
 // ------------ method called for each event  ------------
-void DemoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void Run2010ABAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 // **********************************************
 // here each relevant event will get analyzed 
@@ -498,19 +498,8 @@ using namespace std;
       if (HAD) {
 		// apply calibration factors
 		double Ecal = 0.0;
-		if (basicjet.phi() > 4*(myPI/8) && basicjet.phi() < 5*(myPI/8)) {
-			// include different sectors 5 for Commissioning10 data were first channels are removed
-			/*if ( iEvent.eventAuxiliary().isRealData())*/ Ecal = myJETenergy*(1.3 + 0.23*log(-149 + myJETenergy)); // data (SL) 
-			//if (!iEvent.eventAuxiliary().isRealData()) Ecal = myJETenergy*(0.9 + 0.25*log(-149 + myJETenergy)); // MC (FS) 
-		} else if (basicjet.phi() > 5*(myPI/8) && basicjet.phi() < 6*(myPI/8)) {
-			// include different sectors 6 for Commissioning10 data were first channels are removed
-			/*if ( iEvent.eventAuxiliary().isRealData())*/ Ecal = myJETenergy*(1.4 + 0.21*log(-149 + myJETenergy)); // data (SL) 
-			//if (!iEvent.eventAuxiliary().isRealData()) Ecal = myJETenergy*(-5.8 + 1.3*log(144 + myJETenergy)); // MC (FS)  
-		} else {
-			/*if ( iEvent.eventAuxiliary().isRealData())*/ Ecal = myJETenergy*(1.8 + 0.0037*log(1 + myJETenergy)); // data (SL) good sectors
-			//if (!iEvent.eventAuxiliary().isRealData()) Ecal = myJETenergy*(1.5 + 0.0024*log(1 + myJETenergy)); // MC (FS) good sectors
-			
-		}
+		/*if ( iEvent.eventAuxiliary().isRealData())*/ Ecal = myJETenergy*(1.8 + 0.0037*log(1 + myJETenergy)); // data (SL) good sectors
+		//if (!iEvent.eventAuxiliary().isRealData()) Ecal = myJETenergy*(1.5 + 0.0024*log(1 + myJETenergy)); // MC (FS) good sectors
 		hJet_calenergy->Fill(Ecal); // fill with calibrated HAD jet
 	  } else {
 		hJet_calenergy->Fill(myJETenergy); // fill with other jets
@@ -521,16 +510,16 @@ using namespace std;
 
 
 
-} //DemoAnalyzer::analyze ends
+} //Run2010ABAnalyzer::analyze ends
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void DemoAnalyzer::beginJob() {
+void Run2010ABAnalyzer::beginJob() {
 
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void DemoAnalyzer::endJob() {
+void Run2010ABAnalyzer::endJob() {
 
   std::cout << " number of events that passed selection cuts: " << Nevents << std::endl;
   
@@ -539,6 +528,6 @@ void DemoAnalyzer::endJob() {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(DemoAnalyzer);
+DEFINE_FWK_MODULE(Run2010ABAnalyzer);
 
 
