@@ -27,7 +27,7 @@ import FWCore.Utilities.FileUtils as FileUtils
 # and add up the histograms using root tools.                    *
 # ****************************************************************
 #
-files2010MC = FileUtils.loadListFromFile('/home/cms-opendata/CMSSW_4_2_8_lowpupatch1/src/Demo/DemoAnalyzer/datasets/CMS_MonteCarloCASTOR_MinBias_Tune4C_7TeV_pythia8_cff_py_Step3_START42_V11_Dec11_v1_86bcdbe9c73956c342e477ba771c41c7_file_index.txt')
+files2010MC = FileUtils.loadListFromFile('datasets/CMS_MonteCarloCASTOR_MinBias_Tune4C_7TeV_pythia8_cff_py_Step3_START42_V11_Dec11_v1_86bcdbe9c73956c342e477ba771c41c7_file_index.txt')
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     *files2010MC
@@ -46,8 +46,7 @@ process.source.skipEvents = cms.untracked.uint32(0)
 # communicate with the DB
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-#### use for local running 
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
 process.GlobalTag.globaltag = 'START42_V17B::All'
 
 # load latest ChannelQuality conditions to remove the bad channels
@@ -64,7 +63,7 @@ process.es_prefer_castor = cms.ESPrefer('CastorTextCalibrations','es_ascii')
 # import correct treatment of CASTOR objects
 process.load('RecoLocalCalo.Castor.ReReco_MC_cff')
 
-process.demo = cms.EDAnalyzer('DemoAnalyzer'
+process.analyzer = cms.EDAnalyzer('Run2010ABAnalyzer'
 )
 # ***********************************************************
 # output file name                                          *
@@ -74,4 +73,4 @@ process.demo = cms.EDAnalyzer('DemoAnalyzer'
 process.TFileService = cms.Service("TFileService",
        fileName = cms.string('CASTOR_test_Run2010AMC.root')
                                    )                                   
-process.recopath = cms.Path(process.CastorReReco*process.demo)
+process.recopath = cms.Path(process.CastorReReco*process.analyzer)

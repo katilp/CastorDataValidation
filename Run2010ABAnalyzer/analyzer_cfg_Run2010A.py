@@ -17,7 +17,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50000) )
 
 # define JSON file
-goodJSON = '/home/cms-opendata/CMSSW_4_2_8_lowpupatch1/src/Demo/DemoAnalyzer/datasets/Cert_CMS_CASTOR_141956-144114_7TeV_Apr21ReReco_Run2010A_JSON_v3.txt'
+goodJSON = 'datasets/Cert_CMS_CASTOR_141956-144114_7TeV_Apr21ReReco_Run2010A_JSON_v3.txt'
 
 myLumis = LumiList.LumiList(filename = goodJSON).getCMSSWString().split(',')
 
@@ -33,7 +33,7 @@ import FWCore.Utilities.FileUtils as FileUtils
 # and add up the histograms using root tools.                    *
 # ****************************************************************
 #
-files2010data = FileUtils.loadListFromFile('/home/cms-opendata/CMSSW_4_2_8_lowpupatch1/src/Demo/DemoAnalyzer/datasets/CMS_Run2010A_MinimumBias_AOD_Apr21ReReco-v1_0000_file_index.txt')
+files2010data = FileUtils.loadListFromFile('datasets/CMS_Run2010A_MinimumBias_AOD_Apr21ReReco-v1_0001_file_index.txt')
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     *files2010data
@@ -80,11 +80,8 @@ process.triggerSelection = cms.EDFilter( "TriggerResultsFilter",
 # communicate with the DB
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-#### does not work outside CERN, but use with crab
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db')
 process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
-#### use for local running
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db')
-#process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
 
 # load latest ChannelQuality conditions to remove the bad channels
 process.es_ascii = cms.ESSource("CastorTextCalibrations",
@@ -104,7 +101,7 @@ process.load('RecoLocalCalo.Castor.ReReco_data_cff')
 process.castorInvalidDataFilter = cms.EDFilter("CastorInvalidDataFilter")
 process.castorLEDBXFilter = cms.EDFilter("CastorLEDBXFilter")
 
-process.demo = cms.EDAnalyzer('DemoAnalyzer'
+process.analyzer = cms.EDAnalyzer('Run2010ABAnalyzer'
 )
 # ***********************************************************
 # output file name                                          *
@@ -114,4 +111,4 @@ process.demo = cms.EDAnalyzer('DemoAnalyzer'
 process.TFileService = cms.Service("TFileService",
        fileName = cms.string('CASTOR_test_Run2010A.root')
                                    )                                   
-process.recopath = cms.Path(process.triggerSelection*process.physDecl*process.noscraping*process.castorInvalidDataFilter*process.castorLEDBXFilter*process.CastorReReco*process.demo)
+process.recopath = cms.Path(process.triggerSelection*process.physDecl*process.noscraping*process.castorInvalidDataFilter*process.castorLEDBXFilter*process.CastorReReco*process.analyzer)
