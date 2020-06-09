@@ -14,7 +14,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #    according to need and wish                                        *
 #    default is preset to 10000 events                                 *
 # **********************************************************************
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500000) )
 
 # define JSON file
 goodJSON = 'datasets/Cert_CMS_CASTOR_141956-144114_7TeV_Apr21ReReco_Run2010A_JSON_v3.txt'
