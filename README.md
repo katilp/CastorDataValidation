@@ -35,9 +35,49 @@ Now you should be ready to start analysing data.
 
 ### Run analyzer 
 
-text
+To run the analysis code on Commissioning10 data and MC samples go to following directory:
+
+    cd CastorDataValidation/Commissioning10Analyzer/
+    
+First, set up the Global Tag environment by doing following (these instructions can be found back [here](http://opendata.cern.ch/docs/cms-guide-for-condition-database) ):
+
+    ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A FT_R_42_V10A
+    ln -sf /cvmfs/cms-opendata-conddb.cern.ch/FT_R_42_V10A.db FT_R_42_V10A.db
+    ln -sf /cvmfs/cms-opendata-conddb.cern.ch/START42_V17B START42_V17B
+    ln -sf /cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db START42_V17B.db
+
+Then for data execute:
+
+    cmsRun analyzer_cfg_Commissioning10.py
+    
+And for MC do:
+
+    cmsRun analyzer_cfg_Comm10MC.py
+    
+Note: when running for the first time to check if everything works, reduce the number of events in the python file to run over, e.g. change this line:
+
+    process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+    
+to only run on 10000 events instead of 100000. This will take much less time.
+
+If everything worked as expected you should see two new ROOT files in the current directory:
+
+    CASTOR_test_Comm10MC.root
+    CASTOR_test_Commissioning10.root
+    
 
 ### Create validation plots
+
+Go to the directory containing the plotting tools:
+
+    cd ../Plots/
+    
+and there execute the following python script:
+
+    python drawValidationPlots_Commissioning10.py
+    
+This will create PDF files containing the plots with Commissioning10 data and MC points. Once you run over a sufficient amount of statistics you can compare your obtained plots with those presented [here](https://twiki.cern.ch/twiki/pub/CMSPublic/CASTOROpenData2010/OpenData_CASTORValidationplots_Commissioning10_v1.pdf)
+They should be very similar, having the same behaviour, etc. If that is the case, your code is working properly and you are ready to analyse CASTOR data.
 
 ## Run2010AB data validation
 
