@@ -18,12 +18,14 @@ Then install the correct version of CMSSW and activate it:
     cmsenv
 
 Then add additional needed packages by downloading them as follows:
+
     wget --no-check-certificate https://twiki.cern.ch/twiki/pub/CMS/CASTOROpenDataRun2010AB/Run2010AB_additional_packages.tar
     tar -xvf Run2010AB_additional_packages.tar
 
 Note that following directories should appear in the CMSSW_4_2_8_lowpupatch1/src directory: RecoLocalCalo, RecoJets, data. If this is not the case then something went wrong when downloading/extracting the packages.
 
 Finally, add this repository and compile everything:
+
     git clone https://github.com/cms-legacydata-validation/CastorDataValidation.git
     scram b
 
