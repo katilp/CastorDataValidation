@@ -1,0 +1,27 @@
+on:
+ pull_request:
+   branches: 
+     - master
+jobs:
+  CASTOR_validation:
+    runs-on: ubuntu-latest
+  #  if: github.actor == github.event.repository.owner.login
+    name: CASTOR validation 
+    steps:
+      # To use this repository's private action, you must check out the repository, v2 is part of the action name
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: In the container action step
+        uses: ./ # Uses an action in the root directory
+        id: inspect
+        with:
+          file-name: 'root://eospublic.cern.ch//eos/opendata/cms/Commissioning10/MinimumBias/RECO/07JunReReco_900GeV/0000/027B10AA-2291-E011-BBB4-00E08178C027.root'
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: output
+          path: ${{ steps.inspect.outputs.my_output }}       
+      # Use the output from the `hello` step
+      - name: Get the output file name (just a check)
+        run: |
+          echo "Log file name is ${{ steps.inspect.outputs.my_output }}"
