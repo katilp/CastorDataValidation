@@ -17,9 +17,10 @@ ls -l
 #scram b
 
 #edmProvDump --sort $1 > dump.txt
-#sudo chown -R cmsusr /github/workspace
-#chmod 755 /github/workspace
-#cp dump.txt /github/workspace
+touch dump.txt
+sudo chown -R cmsusr /github/workspace
+chmod 755 /github/workspace
+cp dump.txt /github/workspace
 
 
-echo "::set-output name=another_output::dump.txt"
+echo "::set-output name=my_output::dump.txt"
