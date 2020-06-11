@@ -12,12 +12,10 @@ eval `scramv1 runtime -sh`
 echo "CMSSW_4_2_8 is at your service."
 
 
-git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
+git clone git://github.com/katilp/CastorDataValidation.git
 
 mv CastorDataValidation/CMSSW_additional_packages.tar .
 tar -xvf CMSSW_additional_packages.tar
-
-ls -l
 
 scram b
 
