@@ -11,22 +11,26 @@ The analysis needs to be run within a [CMS VM 2010](http://opendata.cern.ch/docs
 ## Installation
 
 After installing the CERN OpenData VM for 2010 data (version CMS-OpenData-1.1.2) you need to start up your VM and open the 'CMS shell'.
-Then install the correct version of CMSSW and activate it:
+First install the correct version of CMSSW and activate it:
 
     cmsrel CMSSW_4_2_8_lowpupatch1
     cd CMSSW_4_2_8_lowpupatch1/src
     cmsenv
 
-Then add additional needed packages by downloading them as follows:
+Second, download this repository:
 
-    wget --no-check-certificate https://twiki.cern.ch/twiki/pub/CMS/CASTOROpenDataRun2010AB/Run2010AB_additional_packages.tar
-    tar -xvf Run2010AB_additional_packages.tar
+    git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
 
-Note that following directories should appear in the CMSSW_4_2_8_lowpupatch1/src directory: RecoLocalCalo, RecoJets, data. If this is not the case then something went wrong when downloading/extracting the packages.
 
-Finally, add this repository and compile everything:
+Then move and unpack the needed additional packages by doing the following:
 
-    git clone https://github.com/cms-legacydata-validation/CastorDataValidation.git
+    mv CastorDataValidation/CMSSW_additional_packages.tar .
+    tar -xvf CMSSW_additional_packages.tar
+
+Note that following extra directories should appear in the CMSSW_4_2_8_lowpupatch1/src directory: RecoLocalCalo, RecoJets, data. If this is not the case then something went wrong when extracting the packages.
+
+Finally, make sure you compile everything:
+
     scram b
 
 Now you should be ready to start analysing data.
