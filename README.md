@@ -17,12 +17,12 @@ First install the correct version of CMSSW and activate it:
     cd CMSSW_4_2_8_lowpupatch1/src
     cmsenv
 
-Second, download this repository and compile everything:
+Second, download this repository:
 
     git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
 
 
-Then unpack and move the needed additional packages by doing the following:
+Then move and unpack the needed additional packages by doing the following:
 
     mv CastorDataValidation/CMSSW_additional_packages.tar .
     tar -xvf CMSSW_additional_packages.tar
