@@ -12,14 +12,15 @@ eval `scramv1 runtime -sh`
 echo "CMSSW_4_2_8 is at your service."
 
 
-git clone https://github.com/cms-legacydata-validation/CastorDataValidation.git
+git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
 ls -l
 #scram b
 
 #edmProvDump --sort $1 > dump.txt
-#sudo chown -R cmsusr /github/workspace
-#chmod 755 /github/workspace
-#cp dump.txt /github/workspace
+touch dump.txt
+sudo chown -R cmsusr /github/workspace
+chmod 755 /github/workspace
+cp dump.txt /github/workspace
 
 
-echo "::set-output name=another_output::dump.txt"
+echo "::set-output name=my_output::dump.txt"
