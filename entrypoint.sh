@@ -13,8 +13,19 @@ echo "CMSSW_4_2_8 is at your service."
 
 
 git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
+
+mv CastorDataValidation/CMSSW_additional_packages.tar .
+tar -xvf CMSSW_additional_packages.tar
+
 ls -l
-#scram b
+
+scram b
+
+cd CastorDataValidation/Commissioning10Analyzer/
+
+cmsRun analyzer_cfg_Commissioning10.py
+
+ls -l
 
 #edmProvDump --sort $1 > dump.txt
 touch dump.txt
