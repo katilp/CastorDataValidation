@@ -25,11 +25,13 @@ cmsRun analyzer_cfg_Commissioning10.py
 
 ls -l
 
-#edmProvDump --sort $1 > dump.txt
-touch dump.txt
+cd ../Plots/
+
+python drawValidationPlots_Commissioning10.py
+ls -l *.pdf
+
 sudo chown -R cmsusr /github/workspace
 chmod 755 /github/workspace
-cp dump.txt /github/workspace
+cp *.pdf /github/workspace
 
-
-echo "::set-output name=my_output::dump.txt"
+echo "::set-output name=my_output::CASTOR_test_Commissioning10.root"

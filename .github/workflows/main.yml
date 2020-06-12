@@ -17,10 +17,10 @@ jobs:
         with:
           file-name: 'root://eospublic.cern.ch//eos/opendata/cms/Commissioning10/MinimumBias/RECO/07JunReReco_900GeV/0000/027B10AA-2291-E011-BBB4-00E08178C027.root'
       - name: Upload artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: output
-          path: ${{ steps.inspect.outputs.my_output }}       
+          path: /github/workspace/       
       # Use the output from the `hello` step
       - name: Get the output file name (just a check)
         run: |
