@@ -510,5 +510,5 @@ cjet_calenergy.Print("cjet_calenergy_"+"Commissioning10.pdf")
 
 
 # prevent python from exiting and closing the canvas
-preventExit()
+# preventExit()
 

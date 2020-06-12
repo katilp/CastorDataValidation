@@ -4,7 +4,7 @@ process = cms.Process("Demo")
 
 # intialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 # **********************************************************************
 # set the maximum number of events to be processed                     *
@@ -12,7 +12,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #    according to need and wish                                        *
 #    default is preset to 10000 events                                 *
 # **********************************************************************
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 # ****************************************************************************
 # define the input data set here by inserting the appropriate .txt file list *
