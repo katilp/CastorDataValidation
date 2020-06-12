@@ -4,7 +4,7 @@ process = cms.Process("Demo")
 
 # intialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 # **********************************************************************
 # set the maximum number of events to be processed                     *
@@ -12,7 +12,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #    according to need and wish                                        *
 #    default is preset to 10000 events                                 *
 # **********************************************************************
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # ****************************************************************************
 # define the input data set here by inserting the appropriate .txt file list *
@@ -46,7 +46,7 @@ process.source.skipEvents = cms.untracked.uint32(0)
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #### use for local running 
-process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
+#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
 process.GlobalTag.globaltag = 'START42_V17B::All'
 
 # load latest ChannelQuality conditions to remove the bad channels

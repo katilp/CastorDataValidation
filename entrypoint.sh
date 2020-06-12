@@ -22,6 +22,7 @@ scram b
 cd CastorDataValidation/Commissioning10Analyzer/
 
 cmsRun analyzer_cfg_Commissioning10.py
+cmsRun analyzer_cfg_Comm10MC.py
 
 ls -l
 
