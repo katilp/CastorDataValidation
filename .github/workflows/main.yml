@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: output
-          path: /github/workspace/       
+          path: outputs/       
       # Use the output from the `hello` step
       - name: Get the output file name (just a check)
         run: |

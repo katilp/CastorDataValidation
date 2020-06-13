@@ -33,6 +33,11 @@ ls -l *.pdf
 
 sudo chown -R cmsusr /github/workspace
 chmod 755 /github/workspace
-cp *.pdf /github/workspace
+mkdir /github/workspace/outputs
+cp *.pdf /github/workspace/outputs
+ls -l /github/workspace/outputs
+cd /github/workspace/outputs
+pwd
+
 
 echo "::set-output name=my_output::CASTOR_test_Commissioning10.root"
