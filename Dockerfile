@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM cmsopendata/cmssw_4_2_8:latest
+FROM gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1:latest
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
