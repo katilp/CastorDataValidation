@@ -5,23 +5,30 @@ on:
 jobs:
   CASTOR_validation:
     runs-on: ubuntu-latest
-  #  if: github.actor == github.event.repository.owner.login
     name: CASTOR validation 
     steps:
       # To use this repository's private action, you must check out the repository, v2 is part of the action name
       - name: Checkout
-        uses: actions/checkout@v2
+        #uses: actions/checkout@v2
+        run: |
+          pwd
+          ls -l
+          #  (could use checkout action instead)
+          git clone git://github.com/katilp/CastorDataValidation.git workdir
+          cd workdir
+          chmod +x commands.sh
+          ls -l
+
       - name: In the container action step
-        uses: ./ # Uses an action in the root directory
         id: inspect
-        with:
-          file-name: 'root://eospublic.cern.ch//eos/opendata/cms/Commissioning10/MinimumBias/RECO/07JunReReco_900GeV/0000/027B10AA-2291-E011-BBB4-00E08178C027.root'
+        run: | 
+          pwd
+          ls -l 
+          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: output
           path: outputs/       
-      # Use the output from the `hello` step
-      - name: Get the output file name (just a check)
-        run: |
-          echo "Log file name is ${{ steps.inspect.outputs.my_output }}"
+      
