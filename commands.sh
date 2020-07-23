@@ -21,7 +21,9 @@ sed -i "s/$dataeventline/process.maxEvents = cms.untracked.PSet( input = cms.unt
 mceventline=$(grep maxEvents analyzer_cfg_Comm10MC.py)
 sed -i "s/$mceventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" analyzer_cfg_Comm10MC.py
 
-
+#comment the connection to the condition database on cvmfs, the condition data is read differently in the container
+sed "/process.GlobalTag.connect/d" analyzer_cfg_Comm10MC.py
+sed "/process.GlobalTag.connect/d" analyzer_cfg_Comm10MC.py
 
 cmsRun analyzer_cfg_Commissioning10.py
 cmsRun analyzer_cfg_Comm10MC.py
