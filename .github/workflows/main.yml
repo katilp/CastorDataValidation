@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: CASTOR validation 
     env:
-     n_events: 20000
+      n_events: ${{ 200000 }}
     steps:
       # To use this repository's private action, you must check out the repository, v2 is part of the action name
       - name: Checkout
