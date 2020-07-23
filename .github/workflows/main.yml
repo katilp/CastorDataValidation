@@ -24,7 +24,8 @@ jobs:
         run: | 
           pwd
           ls -l 
-          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh
+          # NB the event number is passed at the end of this line:
+          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh 20000
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
