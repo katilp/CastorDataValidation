@@ -46,7 +46,7 @@ process.source.skipEvents = cms.untracked.uint32(0)
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #### use for local running 
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START42_V17B.db')
 process.GlobalTag.globaltag = 'START42_V17B::All'
 
 # load latest ChannelQuality conditions to remove the bad channels
