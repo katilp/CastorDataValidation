@@ -4,6 +4,8 @@
 
 This repository contains code that needs to be used to properly read out CASTOR OpenData of Commissioning10, Run2010A, and Run2010B datasets. It includes two EDAnalyzer plugins that are created to correctly read the reconstructed CASTOR data objects and make validation plots. The needed python configuration files are also included, as well as a plotting script + ROOT files to check the output histograms.
 
+This repository has a github action, which runs the test workflow on the CMS open data container using github free resources. It is triggered by a pull request. The number of events can be modified in [.github/workflows/main.yaml](.github/workflows/main.yml). 
+
 ## Requirements
 
 The analysis needs to be run within a [CMS VM 2010](http://opendata.cern.ch/docs/cms-virtual-machine-2010) and the CMSSW_4_2_8_lowpupatch1 release.
