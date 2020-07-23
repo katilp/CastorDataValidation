@@ -6,6 +6,8 @@ jobs:
   CASTOR_validation:
     runs-on: ubuntu-latest
     name: CASTOR validation 
+    env:
+     n_events: 20000
     steps:
       # To use this repository's private action, you must check out the repository, v2 is part of the action name
       - name: Checkout
@@ -24,7 +26,7 @@ jobs:
         run: | 
           pwd
           ls -l 
-          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh
+          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh n_events
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
