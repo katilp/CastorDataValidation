@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: castor-argo-
+spec:
+  entrypoint: castor-argo
+  volumes:
+    - name: workdir
+      hostPath:
+        path: /mnt/data
+        type: DirectoryOrCreate
+  templates:
+  - name: castor-argo
+    script:
+      image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 
+      command: [sh]
+      source: |
+        sudo chown $USER /mnt/vol
+        source /opt/cms/entrypoint.sh
+        git clone -b argo-wf git://github.com/katilp/CastorDataValidation.git
+        mv CastorDataValidation/CMSSW_additional_packages.tar .
+        tar -xvf CMSSW_additional_packages.tar
+        scram b
+        cd CastorDataValidation/Commissioning10Analyzer/
+        nev=1000
+        dataeventline=$(grep maxEvents analyzer_cfg_Commissioning10.py)
+        sed -i "s/$dataeventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" analyzer_cfg_Commissioning10.py
+        mceventline=$(grep maxEvents analyzer_cfg_Comm10MC.py)
+        sed -i "s/$mceventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" analyzer_cfg_Comm10MC.py
+        #comment the connection to the condition database on cvmfs, the condition data is read differently in the container
+        sed -i "s/process.GlobalTag.connect/\#process.GlobalTag.connect/g" analyzer_cfg_Commissioning10.py
+        sed -i "s/process.GlobalTag.connect/\#process.GlobalTag.connect/g" analyzer_cfg_Comm10MC.py
+        cmsRun analyzer_cfg_Commissioning10.py
+        cmsRun analyzer_cfg_Comm10MC.py
+        ls -l
+        cd ../Plots/
+        python drawValidationPlots_Commissioning10.py
+        ls -l *.pdf
+        mv *.pdf /mnt/vol
+      volumeMounts:
+      - name: workdir
+        mountPath: /mnt/vol
