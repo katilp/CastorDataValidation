@@ -17,7 +17,7 @@ spec:
       source: |
         sudo chown $USER /mnt/vol
         source /opt/cms/entrypoint.sh
-        git clone -b argo-wf git://github.com/katilp/CastorDataValidation.git
+        git clone  git://github.com/katilp/CastorDataValidation.git
         mv CastorDataValidation/CMSSW_additional_packages.tar .
         tar -xvf CMSSW_additional_packages.tar
         scram b
