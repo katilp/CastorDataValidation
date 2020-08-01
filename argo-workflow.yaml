@@ -19,31 +19,40 @@ spec:
           parameters:
           - name: config
             value: "analyzer_cfg_Commissioning10.py"
+          - name: dir
+            value: "Commissioning10Analyzer"
       - name: step1-mc
         template: castor-step1
         arguments:
           parameters:
           - name: config
             value: "analyzer_cfg_Comm10MC.py"
+          - name: dir
+            value: "Commissioning10Analyzer"
       - name: step2-plot
         dependencies: [step1-mc, step1-data]
         template: castor-step2
+        arguments:
+          parameters:
+          - name: config
+            value: "drawValidationPlots_Commissioning10.py"
         
   - name: castor-step1
     inputs:
       parameters:
-      - name: config       
+      - name: config 
+      - name: dir
     script:
       image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
       command: [sh]
       source: |
         sudo chown $USER /mnt/vol
         source /opt/cms/entrypoint.sh
-        git clone  git://github.com/katilp/CastorDataValidation.git
+        git clone  git://github.com/cms-legacydata-validation/CastorDataValidation.git
         mv CastorDataValidation/CMSSW_additional_packages.tar .
         tar -xvf CMSSW_additional_packages.tar
         scram b
-        cd CastorDataValidation/Commissioning10Analyzer/
+        cd CastorDataValidation/{{inputs.parameters.dir}}/
         nev=10000
         eventline=$(grep maxEvents {{inputs.parameters.config}})
         sed -i "s/$eventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" {{inputs.parameters.config}}
@@ -57,19 +66,23 @@ spec:
         mountPath: /mnt/vol
         
   - name: castor-step2
+    inputs:
+      parameters:
+      - name: config 
     script:
       image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
       command: [sh]
       source: |
         sudo chown $USER /mnt/vol
         source /opt/cms/entrypoint.sh
-        git clone  git://github.com/katilp/CastorDataValidation.git
+        git clone  git://github.com/cms-legacydata-validation/CastorDataValidation.git
         mv CastorDataValidation/CMSSW_additional_packages.tar .
         tar -xvf CMSSW_additional_packages.tar
         scram b
         cd CastorDataValidation/Plots/
         mv /mnt/vol/CASTOR*.root .
-        python drawValidationPlots_Commissioning10.py
+        sed -i "s/preventExit()/\#preventExit()/g" {{inputs.parameters.config}}
+        python {{inputs.parameters.config}}
         ls -l *.pdf
         mv *.pdf /mnt/vol
       volumeMounts:
