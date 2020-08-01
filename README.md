@@ -4,15 +4,15 @@
 
 This repository contains code that needs to be used to properly read out CASTOR OpenData of Commissioning10, Run2010A, and Run2010B datasets. It includes two EDAnalyzer plugins that are created to correctly read the reconstructed CASTOR data objects and make validation plots. The needed python configuration files are also included, as well as a plotting script + ROOT files to check the output histograms.
 
-This repository has a github action, which runs the test workflow on the CMS open data container using github free resources. It is triggered by a pull request. The number of events can be modified in [.github/workflows/main.yaml](.github/workflows/main.yml). 
+This repository containes also [a github action](.github/workflows/main.yml), which runs the test workflow on the CMS open data container using github free resources. It sets up a minikube environment and runs a workflow defined with argo workflow engine. The ouput is returned as a github artifcat. The workflow is triggered by a pull request. The number of events can be modified in [argo-workflow.yaml](argo-workflow.yaml). 
 
 ## Requirements
 
-The analysis needs to be run within a [CMS VM 2010](http://opendata.cern.ch/docs/cms-virtual-machine-2010) and the CMSSW_4_2_8_lowpupatch1 release.
+The analysis needs to be run within a [CMS VM 2010](http://opendata.cern.ch/docs/cms-virtual-machine-2010) and the CMSSW_4_2_8_lowpupatch1 release or in the CMS open data docker container with that release installed. For the usage in the container e.g. in a minikube environment, see defining and using a persistent volume and setting up argo in [the github action definition](.github/workflows/main.yml)  and setting up the workflow definition in [argo-workflow.yaml](argo-workflow.yaml).
 
 ## Installation
 
-After installing the CERN OpenData VM for 2010 data (version CMS-OpenData-1.1.2) you need to start up your VM and open the 'CMS shell'.
+After installing the CERN OpenData VM for 2010 data (version CMS-OpenData-1.1.4) you need to start up your VM and open the 'CMS shell'.
 First install the correct version of CMSSW and activate it:
 
     cmsrel CMSSW_4_2_8_lowpupatch1
