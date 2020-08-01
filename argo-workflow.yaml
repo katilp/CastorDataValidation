@@ -22,7 +22,7 @@ spec:
         tar -xvf CMSSW_additional_packages.tar
         scram b
         cd CastorDataValidation/Commissioning10Analyzer/
-        nev=1000
+        nev=10000
         dataeventline=$(grep maxEvents analyzer_cfg_Commissioning10.py)
         sed -i "s/$dataeventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" analyzer_cfg_Commissioning10.py
         mceventline=$(grep maxEvents analyzer_cfg_Comm10MC.py)
