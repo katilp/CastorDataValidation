@@ -1,34 +1,39 @@
+name: Test run on minikube
 on:
-  release:
-    types: [published]
+  - pull_request
 jobs:
-  CASTOR_validation:
+  job1:
     runs-on: ubuntu-latest
-    name: CASTOR validation 
+    name: argo workflow on minikube with output
     steps:
-      # To use this repository's private action, you must check out the repository, v2 is part of the action name
-      - name: Checkout
-        #uses: actions/checkout@v2
-        run: |
-          pwd
-          ls -l
-          #  (could use checkout action instead)
-          git clone git://github.com/katilp/CastorDataValidation.git workdir
-          cd workdir
-          chmod +x commands.sh
-          ls -l
-
-      - name: In the container action step
-        id: inspect
-        run: | 
-          pwd
-          ls -l 
-          # NB the event number is passed at the end of this line:
-          docker run -v $(pwd):/mountedvolume -w /home/cmsusr gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1 /bin/bash /mountedvolume/workdir/commands.sh 20000
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: output
-          path: outputs/       
-      
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Set up persistent volume and storage pod
+      run: |
+        kubectl apply -f volumes.yaml   
+    - name: Set up argo
+      run: |
+        kubectl create ns argo
+        kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/quick-start-postgres.yaml
+        curl -sLO https://github.com/argoproj/argo/releases/download/v2.10.0-rc3/argo-linux-amd64
+        chmod +x argo-linux-amd64 
+        mv ./argo-linux-amd64 $HOME/bin/argo
+        argo version
+    - name: Submit the argo test workflow
+      run: |
+        argo submit -n argo  --wait argo-workflow.yaml
+        argo get -n argo @latest
+    - name: Check the output
+      run: |
+        argo logs -n argo @latest
+        mkdir outputs
+        echo Copy file with kubectl cp task-pv-pod:/mnt/data/ outputs/ :
+        kubectl cp task-pv-pod:/mnt/data/ outputs/
+        echo ls -l :
+        ls -l
+    - name: Upload the ouput as a github artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: output
+        path: outputs/ 
