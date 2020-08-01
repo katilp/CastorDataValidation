@@ -18,24 +18,24 @@ spec:
         arguments:
           parameters:
           - name: config
-            value: "analyzer_cfg_Commissioning10.py"
+            value: "analyzer_cfg_Run2010A.py"
           - name: dir
-            value: "Commissioning10Analyzer"
+            value: "Run2010ABAnalyzer"
       - name: step1-mc
         template: castor-step1
         arguments:
           parameters:
           - name: config
-            value: "analyzer_cfg_Comm10MC.py"
+            value: "analyzer_cfg_Run2010AMC.py"
           - name: dir
-            value: "Commissioning10Analyzer"
+            value: "Run2010ABAnalyzer"
       - name: step2-plot
         dependencies: [step1-mc, step1-data]
         template: castor-step2
         arguments:
           parameters:
           - name: config
-            value: "drawValidationPlots_Commissioning10.py"
+            value: "drawValidationPlots_Run2010A.py"
         
   - name: castor-step1
     inputs:
