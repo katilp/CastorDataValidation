@@ -44,7 +44,7 @@ spec:
         tar -xvf CMSSW_additional_packages.tar
         scram b
         cd CastorDataValidation/Commissioning10Analyzer/
-        nev=1000
+        nev=10000
         eventline=$(grep maxEvents {{inputs.parameters.config}})
         sed -i "s/$eventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" {{inputs.parameters.config}}
         #comment the connection to the condition database on cvmfs, the condition data is read differently in the container
